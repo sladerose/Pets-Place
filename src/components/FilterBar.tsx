@@ -7,17 +7,18 @@ interface FilterBarProps {
   locations: string[];
   onBreedChange: (breed: string, isChecked: boolean) => void;
   onLocationChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  selectedLocation: string;
   onMinAgeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onMaxAgeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onMinPriceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onMaxPriceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onDateListedChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onOrderByChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   selectedBreeds: string[];
   minAge: string;
   maxAge: string;
   minPrice: string;
   maxPrice: string;
-  dateListed: string;
+  orderBy: string;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -29,23 +30,40 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onMaxAgeChange,
   onMinPriceChange,
   onMaxPriceChange,
-  onDateListedChange,
+  onOrderByChange,
   selectedBreeds,
+  selectedLocation,
   minAge,
   maxAge,
   minPrice,
   maxPrice,
-  dateListed,
+  orderBy,
 }) => {
   const [isBreedDropdownOpen, setIsBreedDropdownOpen] = useState(false);
   const breedDropdownRef = useRef<HTMLDivElement>(null);
   const breedButtonRef = useRef<HTMLButtonElement>(null);
   const breedOptionsRef = useRef<HTMLLabelElement[]>([]);
 
+  const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
+  const locationDropdownRef = useRef<HTMLDivElement>(null);
+  const locationButtonRef = useRef<HTMLButtonElement>(null);
+  const locationOptionsRef = useRef<HTMLDivElement[]>([]);
+
+  const [isOrderByDropdownOpen, setIsOrderByDropdownOpen] = useState(false);
+  const orderByDropdownRef = useRef<HTMLDivElement>(null);
+  const orderByButtonRef = useRef<HTMLButtonElement>(null);
+  const orderByOptionsRef = useRef<HTMLDivElement[]>([]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (breedDropdownRef.current && !breedDropdownRef.current.contains(event.target as Node)) {
         setIsBreedDropdownOpen(false);
+      }
+      if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) {
+        setIsLocationDropdownOpen(false);
+      }
+      if (orderByDropdownRef.current && !orderByDropdownRef.current.contains(event.target as Node)) {
+        setIsOrderByDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -54,20 +72,58 @@ const FilterBar: React.FC<FilterBarProps> = ({
     };
   }, []);
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = (event: React.KeyboardEvent, dropdownType: 'breed' | 'location' | 'orderBy') => {
     if (event.key === 'Escape') {
-      setIsBreedDropdownOpen(false);
-      breedButtonRef.current?.focus();
-    } else if (event.key === 'ArrowDown' && isBreedDropdownOpen) {
+      if (dropdownType === 'breed') {
+        setIsBreedDropdownOpen(false);
+        breedButtonRef.current?.focus();
+      } else if (dropdownType === 'location') {
+        setIsLocationDropdownOpen(false);
+        locationButtonRef.current?.focus();
+      } else if (dropdownType === 'orderBy') {
+        setIsOrderByDropdownOpen(false);
+        orderByButtonRef.current?.focus();
+      }
+    } else if (event.key === 'ArrowDown') {
       event.preventDefault();
-      const currentIndex = breedOptionsRef.current.findIndex(option => option === document.activeElement);
-      const nextIndex = (currentIndex + 1) % breedOptionsRef.current.length;
-      breedOptionsRef.current[nextIndex]?.focus();
-    } else if (event.key === 'ArrowUp' && isBreedDropdownOpen) {
+      let optionsRef: (HTMLLabelElement | HTMLDivElement)[] = [];
+      let isOpen = false;
+      if (dropdownType === 'breed' && isBreedDropdownOpen) {
+        optionsRef = breedOptionsRef.current;
+        isOpen = true;
+      } else if (dropdownType === 'location' && isLocationDropdownOpen) {
+        optionsRef = locationOptionsRef.current;
+        isOpen = true;
+      } else if (dropdownType === 'orderBy' && isOrderByDropdownOpen) {
+        optionsRef = orderByOptionsRef.current;
+        isOpen = true;
+      }
+
+      if (isOpen) {
+        const currentIndex = optionsRef.findIndex(option => option === document.activeElement);
+        const nextIndex = (currentIndex + 1) % optionsRef.length;
+        optionsRef[nextIndex]?.focus();
+      }
+    } else if (event.key === 'ArrowUp') {
       event.preventDefault();
-      const currentIndex = breedOptionsRef.current.findIndex(option => option === document.activeElement);
-      const prevIndex = (currentIndex - 1 + breedOptionsRef.current.length) % breedOptionsRef.current.length;
-      breedOptionsRef.current[prevIndex]?.focus();
+      let optionsRef: (HTMLLabelElement | HTMLDivElement)[] = [];
+      let isOpen = false;
+      if (dropdownType === 'breed' && isBreedDropdownOpen) {
+        optionsRef = breedOptionsRef.current;
+        isOpen = true;
+      } else if (dropdownType === 'location' && isLocationDropdownOpen) {
+        optionsRef = locationOptionsRef.current;
+        isOpen = true;
+      } else if (dropdownType === 'orderBy' && isOrderByDropdownOpen) {
+        optionsRef = orderByOptionsRef.current;
+        isOpen = true;
+      }
+
+      if (isOpen) {
+        const currentIndex = optionsRef.findIndex(option => option === document.activeElement);
+        const prevIndex = (currentIndex - 1 + optionsRef.length) % optionsRef.length;
+        optionsRef[prevIndex]?.focus();
+      }
     }
   };
 
@@ -75,8 +131,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   const labelClasses = "block text-sm font-medium text-gray-700 mb-1";
 
   return (
-    <div className="flex flex-col space-y-4 mb-6">
-      <div className="relative" ref={breedDropdownRef}>
+    <div className="flex flex-row flex-wrap gap-4 mb-6">
+      <div className="relative flex-1 " ref={breedDropdownRef}>
         <label id="breed-label" className={labelClasses}>Breed</label>
         <button
           ref={breedButtonRef}
@@ -85,7 +141,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           aria-haspopup="listbox"
           aria-expanded={isBreedDropdownOpen}
           aria-labelledby="breed-label"
-          onKeyDown={handleKeyDown}
+          onKeyDown={(e) => handleKeyDown(e, 'breed')}
         >
           {selectedBreeds.length > 0 ? `Breeds (${selectedBreeds.length})` : 'All Breeds'}
         </button>
@@ -126,23 +182,73 @@ const FilterBar: React.FC<FilterBarProps> = ({
         )}
       </div>
 
-      <div className="relative">
-        <label htmlFor="location-select" className={labelClasses}>Location</label>
-        <select
-          id="location-select"
-          onChange={onLocationChange}
-          className={inputClasses}
+      <div className="relative flex-1 ">
+        <label id="location-label" className={labelClasses}>Location</label>
+        <button
+          ref={locationButtonRef}
+          onClick={() => setIsLocationDropdownOpen(!isLocationDropdownOpen)}
+          className={`${inputClasses} text-left`}
+          aria-haspopup="listbox"
+          aria-expanded={isLocationDropdownOpen}
+          aria-labelledby="location-label"
+          onKeyDown={(e) => handleKeyDown(e, 'location')}
         >
-          <option value="">All Locations</option>
-          {locations.map((location) => (
-            <option key={location} value={location}>
-              {location}
-            </option>
-          ))}
-        </select>
+          {selectedLocation || 'All Locations'}
+        </button>
+        {isLocationDropdownOpen && (
+          <div
+            role="listbox"
+            aria-labelledby="location-label"
+            className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg max-h-60 overflow-auto"
+            tabIndex={-1}
+          >
+            <div
+              key="all-locations"
+              role="option"
+              aria-selected={!selectedLocation}
+              className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+              onClick={() => {
+                onLocationChange({ target: { value: '' } } as React.ChangeEvent<HTMLSelectElement>);
+                setIsLocationDropdownOpen(false);
+              }}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  onLocationChange({ target: { value: '' } } as React.ChangeEvent<HTMLSelectElement>);
+                  setIsLocationDropdownOpen(false);
+                }
+                handleKeyDown(e, 'location');
+              }}
+              ref={el => { if (el) locationOptionsRef.current[0] = el as HTMLDivElement; }}
+            >
+              All Locations
+            </div>
+            {locations.map((location, index) => (
+              <div
+                key={location}
+                role="option"
+                aria-selected={selectedLocation === location}
+                className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    onLocationChange({ target: { value: location } } as React.ChangeEvent<HTMLSelectElement>);
+                    setIsLocationDropdownOpen(false);
+                  }
+                  handleKeyDown(e, 'location');
+                }}
+                ref={el => { if (el) locationOptionsRef.current[index + 1] = el as HTMLDivElement; }}
+              >
+                {location}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div>
+      <div className="flex-1 ">
         <label className={labelClasses}>Age (Years)</label>
         <div className="flex items-center gap-2">
           <input
@@ -165,7 +271,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </div>
       </div>
 
-      <div>
+      <div className="flex-1 ">
         <label className={labelClasses}>Price (R)</label>
         <div className="flex items-center gap-2">
           <input
@@ -188,15 +294,82 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </div>
       </div>
 
-      <div>
-        <label htmlFor="date-listed" className={labelClasses}>Date Listed</label>
-        <input
-          id="date-listed"
-          type="date"
-          value={dateListed}
-          onChange={onDateListedChange}
-          className={inputClasses}
-        />
+      <div className="flex-1 ">
+        <label id="order-by-label" className={labelClasses}>Order By</label>
+        <button
+          ref={orderByButtonRef}
+          onClick={() => setIsOrderByDropdownOpen(!isOrderByDropdownOpen)}
+          className={`${inputClasses} text-left`}
+          aria-haspopup="listbox"
+          aria-expanded={isOrderByDropdownOpen}
+          aria-labelledby="order-by-label"
+          onKeyDown={(e) => handleKeyDown(e, 'orderBy')}
+        >
+          {orderBy === 'created_at_asc' ? 'Date Listed (Ascending)' : orderBy === 'created_at_desc' ? 'Date Listed (Descending)' : 'Default'}
+        </button>
+        {isOrderByDropdownOpen && (
+          <div
+            role="listbox"
+            aria-labelledby="order-by-label"
+            className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg max-h-60 overflow-auto"
+            tabIndex={-1}
+          >
+            <div
+              key="default-order"
+              role="option"
+              aria-selected={!orderBy}
+              className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  onOrderByChange({ target: { value: '' } } as React.ChangeEvent<HTMLSelectElement>);
+                  setIsOrderByDropdownOpen(false);
+                }
+                handleKeyDown(e, 'orderBy');
+              }}
+              ref={el => { if (el) orderByOptionsRef.current[0] = el as HTMLDivElement; }}
+            >
+              Default
+            </div>
+            <div
+              key="created_at_asc"
+              role="option"
+              aria-selected={orderBy === 'created_at_asc'}
+              className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  onOrderByChange({ target: { value: 'created_at_asc' } } as React.ChangeEvent<HTMLSelectElement>);
+                  setIsOrderByDropdownOpen(false);
+                }
+                handleKeyDown(e, 'orderBy');
+              }}
+              ref={el => { if (el) orderByOptionsRef.current[1] = el as HTMLDivElement; }}
+            >
+              Date Listed (Ascending)
+            </div>
+            <div
+              key="created_at_desc"
+              role="option"
+              aria-selected={orderBy === 'created_at_desc'}
+              className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  onOrderByChange({ target: { value: 'created_at_desc' } } as React.ChangeEvent<HTMLSelectElement>);
+                  setIsOrderByDropdownOpen(false);
+                }
+                handleKeyDown(e, 'orderBy');
+              }}
+              ref={el => { if (el) orderByOptionsRef.current[2] = el as HTMLDivElement; }}
+            >
+              Date Listed (Descending)
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

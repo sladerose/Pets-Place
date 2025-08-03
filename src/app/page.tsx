@@ -34,7 +34,7 @@ const HomePage = () => {
   const [maxAge, setMaxAge] = useState<string>('');
   const [minPrice, setMinPrice] = useState<string>('');
   const [maxPrice, setMaxPrice] = useState<string>('');
-  const [dateListed, setDateListed] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<string>('');
 
   const loaderRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +49,7 @@ const HomePage = () => {
     maxAge: string,
     minPrice: string,
     maxPrice: string,
-    dateListed: string
+    orderBy: string
   ) => {
     setIsLoading(true);
     setError(null);
@@ -88,8 +88,10 @@ const HomePage = () => {
       if (maxPrice) {
         query = query.lte('price', parseFloat(maxPrice));
       }
-      if (dateListed) {
-        query = query.gte('created_at', dateListed);
+      if (orderBy === 'created_at_asc') {
+        query = query.order('created_at', { ascending: true });
+      } else if (orderBy === 'created_at_desc') {
+        query = query.order('created_at', { ascending: false });
       }
 
       const { data, error: supabaseError } = await query;
@@ -124,9 +126,9 @@ const HomePage = () => {
       maxAge,
       minPrice,
       maxPrice,
-      dateListed
+      orderBy
     );
-  }, [selectedBreeds, selectedLocation, searchTerm, minAge, maxAge, minPrice, maxPrice, dateListed, fetchAndFilterPets]);
+  }, [selectedBreeds, selectedLocation, searchTerm, minAge, maxAge, minPrice, maxPrice, orderBy, fetchAndFilterPets]);
 
   const handleBreedChange = (breed: string, isChecked: boolean) => {
     const newSelectedBreeds = isChecked
@@ -134,21 +136,18 @@ const HomePage = () => {
       : selectedBreeds.filter((b) => b !== breed);
     setSelectedBreeds(newSelectedBreeds);
     setDisplayCount(INITIAL_LOAD_COUNT);
-    // applyFilters will be called by useEffect
   };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const location = e.target.value;
     setSelectedLocation(location);
     setDisplayCount(INITIAL_LOAD_COUNT);
-    // applyFilters will be called by useEffect
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
     setDisplayCount(INITIAL_LOAD_COUNT);
-    // applyFilters will be called by useEffect
   };
 
   const handleMinAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,8 +170,8 @@ const HomePage = () => {
     setDisplayCount(INITIAL_LOAD_COUNT);
   };
 
-  const handleDateListedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDateListed(e.target.value);
+  const handleOrderByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrderBy(e.target.value);
     setDisplayCount(INITIAL_LOAD_COUNT);
   };
 
@@ -180,15 +179,13 @@ const HomePage = () => {
     applyFilters();
   };
 
-  // Apply filters whenever filter states change
   useEffect(() => {
     const handler = setTimeout(() => {
       applyFilters();
-    }, 300); // Debounce filter application
+    }, 300);
     return () => clearTimeout(handler);
-  }, [selectedBreeds, selectedLocation, searchTerm, minAge, maxAge, minPrice, maxPrice, dateListed, applyFilters]);
+  }, [selectedBreeds, selectedLocation, searchTerm, minAge, maxAge, minPrice, maxPrice, orderBy, applyFilters]);
 
-  // Infinite scrolling logic
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -197,7 +194,7 @@ const HomePage = () => {
           setTimeout(() => {
             setDisplayCount((prevCount) => prevCount + LOAD_MORE_COUNT);
             setIsLoading(false);
-          }, 500); // Simulate loading more data
+          }, 500);
         }
       },
       { threshold: 1.0 }
@@ -218,16 +215,12 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      
-
-      <div
-        className="relative bg-white rounded-lg shadow-md h-64 flex items-center text-gray-800"
-      >
-        <div className="container mx-auto px-6 text-center p-4">
+      <div className="relative bg-blue-100 shadow-lg py-8 px-6 text-gray-800 flex flex-col items-center justify-center">
+        <div className="container mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">
             Find KUSA registered breeds of dogs & puppies in South Africa
           </h1>
-          <div className="w-full max-w-lg mx-auto">
+          <div className="w-full max-w-lg mx-auto mb-6">
             <input
               type="text"
               value={searchTerm}
@@ -236,60 +229,61 @@ const HomePage = () => {
               className="w-full p-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md border border-gray-300"
             />
           </div>
-        </div>
-      </div>
-
-      <main className="flex-grow container mx-auto px-6 py-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
+          <div className="w-full max-w-screen-xl mx-auto">
             <FilterBar
               breeds={breeds}
               locations={locations}
               selectedBreeds={selectedBreeds}
+              selectedLocation={selectedLocation}
               onBreedChange={handleBreedChange}
               onLocationChange={handleLocationChange}
               minAge={minAge}
               maxAge={maxAge}
               minPrice={minPrice}
               maxPrice={maxPrice}
-              dateListed={dateListed}
+              orderBy={orderBy}
               onMinAgeChange={handleMinAgeChange}
               onMaxAgeChange={handleMaxAgeChange}
               onMinPriceChange={handleMinPriceChange}
               onMaxPriceChange={handleMaxPriceChange}
-              onDateListedChange={handleDateListedChange}
+              onOrderByChange={handleOrderByChange}
             />
           </div>
-
-          <section className="md:col-span-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {error ? (
-                <div role="status" aria-live="polite" className="col-span-full text-center">
-                  <p className="text-red-500 mb-4">{error}</p>
-                  <button
-                    onClick={retryFilter}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Retry
-                  </button>
-                </div>
-              ) : isLoading && petsToDisplay.length === 0 ? (
-                <p role="status" aria-live="polite" className="col-span-full text-center">Loading pets...</p>
-              ) : petsToDisplay.length > 0 ? (
-                petsToDisplay.map((pet) => <PetCard key={pet.id} pet={pet} />)
-              ) : (
-                <p role="status" aria-live="polite" className="col-span-full text-center">No pets match your current filters. Try adjusting your search.</p>
-              )}
-            </div>
-            {isLoading && petsToDisplay.length > 0 && (
-              <p role="status" aria-live="polite" className="text-center mt-4">Loading more pets...</p>
-            )}
-            {!isLoading && petsToDisplay.length > 0 && petsToDisplay.length === filteredPets.length && (
-              <p role="status" aria-live="polite" className="text-center mt-4">All pets loaded.</p>
-            )}
-            <div ref={loaderRef} style={{ height: '20px' }}></div>
-          </section>
         </div>
+      </div>
+
+      <main className="flex-grow container mx-auto px-6 py-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {error ? (
+            <div role="status" aria-live="polite" className="col-span-full text-center">
+              <p className="text-red-500 mb-4">{error}</p>
+              <button
+                onClick={retryFilter}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Retry
+              </button>
+            </div>
+          ) : isLoading && petsToDisplay.length === 0 ? (
+            <p role="status" aria-live="polite" className="col-span-full text-center">Loading pets...</p>
+          ) : petsToDisplay.length > 0 ? (
+            petsToDisplay.map((pet) => <PetCard key={pet.id} pet={pet} />)
+          ) : (
+            <p role="status" aria-live="polite" className="col-span-full text-center">
+              No pets match your current filters. Try adjusting your search.
+            </p>
+          )}
+        </div>
+
+        {isLoading && petsToDisplay.length > 0 && (
+          <p role="status" aria-live="polite" className="text-center mt-4">Loading more pets...</p>
+        )}
+
+        {!isLoading && petsToDisplay.length > 0 && petsToDisplay.length === filteredPets.length && (
+          <p role="status" aria-live="polite" className="text-center mt-4">All pets loaded.</p>
+        )}
+
+        <div ref={loaderRef} style={{ height: '20px' }}></div>
       </main>
 
       <footer className="bg-gray-800 text-white py-6">
