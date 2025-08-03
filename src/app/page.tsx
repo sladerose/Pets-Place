@@ -223,11 +223,11 @@ const HomePage = () => {
       <div
         className="relative bg-white rounded-lg shadow-md h-64 flex items-center text-gray-800"
       >
-        <div className="container mx-auto px-6 text-left p-4">
-          <h1 className="text-5xl font-bold mb-4">
+        <div className="container mx-auto px-6 text-center p-4">
+          <h1 className="text-3xl font-bold mb-4">
             Find KUSA registered breeds of dogs & puppies in South Africa
           </h1>
-          <div className="w-full max-w-2xl">
+          <div className="w-full max-w-lg mx-auto">
             <input
               type="text"
               value={searchTerm}
