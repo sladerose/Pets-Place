@@ -223,7 +223,7 @@ const HomePage = () => {
       <div
         className="relative bg-white rounded-lg shadow-md h-64 flex items-center text-gray-800"
       >
-        <div className="container mx-auto px-6 text-left bg-black bg-opacity-50 p-4 rounded-lg">
+        <div className="container mx-auto px-6 text-left p-4">
           <h1 className="text-5xl font-bold mb-4">
             Find KUSA registered breeds of dogs & puppies in South Africa
           </h1>
@@ -233,7 +233,7 @@ const HomePage = () => {
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder="Search by breed, location, or description..."
-              className="w-full p-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md border border-gray-300"
             />
           </div>
         </div>
