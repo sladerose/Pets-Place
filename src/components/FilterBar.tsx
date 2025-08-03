@@ -164,7 +164,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                     e.preventDefault();
                     onBreedChange(breed, !selectedBreeds.includes(breed));
                   }
-                  handleKeyDown(e);
+                  handleKeyDown(e, 'breed');
                 }}
                 ref={el => { if (el) breedOptionsRef.current[index] = el; }}
               >
