@@ -1,0 +1,113 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.allPets = void 0;
+exports.allPets = [
+    {
+        id: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
+        breed: 'Golden Retriever',
+        price: 10000,
+        location: 'Cape Town, WC',
+        image: [
+            'https://placedog.net/640/480?id=1',
+            'https://placedog.net/640/480?id=101',
+            'https://placedog.net/640/480?id=201',
+        ],
+        description: 'The Golden Retriever is a sturdy, muscular dog of medium size, famous for its dense, lustrous coat of gold. These dogs are outgoing, trustworthy, and eager-to-please family dogs, and relatively easy to train.',
+    },
+    {
+        id: 'b2c3d4e5-f6a7-8901-2345-67890abcdef0',
+        breed: 'French Bulldog',
+        price: 25000,
+        location: 'Johannesburg, GP',
+        image: [
+            'https://placedog.net/640/480?id=2',
+            'https://placedog.net/640/480?id=102',
+            'https://placedog.net/640/480?id=202',
+        ],
+        description: 'The French Bulldog is a small, muscular dog with a smooth coat, short face, and trademark bat-like ears. They are affectionate, alert, and playful, but can also be stubborn.',
+    },
+    {
+        id: 'c3d4e5f6-a7b8-9012-3456-7890abcdef01',
+        breed: 'Labrador',
+        price: 8000,
+        location: 'Durban, KZN',
+        image: [
+            'https://placedog.net/640/480?id=3',
+            'https://placedog.net/640/480?id=103',
+            'https://placedog.net/640/480?id=203',
+        ],
+        description: 'The Labrador Retriever is a friendly, outgoing, and high-spirited companion who has more than enough affection to go around for a family looking for a medium-to-large dog.',
+    },
+    {
+        id: 'd4e5f6a7-b8c9-0123-4567-890abcdef012',
+        breed: 'German Shepherd',
+        price: 12000,
+        location: 'Pretoria, GP',
+        image: [
+            'https://placedog.net/640/480?id=4',
+            'https://placedog.net/640/480?id=104',
+            'https://placedog.net/640/480?id=204',
+        ],
+        description: 'The German Shepherd is a large, agile, muscular dog of noble character and high intelligence. They are loyal, confident, courageous, and steady, making them excellent family protectors.',
+    },
+    {
+        id: 'e5f6a7b8-c9d0-1234-5678-90abcdef0123',
+        breed: 'Poodle',
+        price: 15000,
+        location: 'Bloemfontein, FS',
+        image: [
+            'https://placedog.net/640/480?id=5',
+            'https://placedog.net/640/480?id=105',
+            'https://placedog.net/640/480?id=205',
+        ],
+        description: 'The Poodle is an intelligent, proud, and elegant dog. They are known for their hypoallergenic coat and come in three sizes: Standard, Miniature, and Toy.',
+    },
+    {
+        id: 'f6a7b8c9-d0e1-2345-6789-0abcdef01234',
+        breed: 'Beagle',
+        price: 7500,
+        location: 'Port Elizabeth, EC',
+        image: [
+            'https://placedog.net/640/480?id=6',
+            'https://placedog.net/640/480?id=106',
+            'https://placedog.net/640/480?id=206',
+        ],
+        description: 'The Beagle is a small, compact, and hardy hound dog. They are merry and fun-loving, but also have a stubborn streak. Their noses guide them through life, and they are never happier than when following an interesting scent.',
+    },
+    {
+        id: 'a7b8c9d0-e1f2-3456-7890-abcdef012345',
+        breed: 'Chihuahua',
+        price: 5000,
+        location: 'Polokwane, LP',
+        image: [
+            'https://placedog.net/640/480?id=7',
+            'https://placedog.net/640/480?id=107',
+            'https://placedog.net/640/480?id=207',
+        ],
+        description: 'The Chihuahua is a tiny dog with a huge personality. A national symbol of Mexico, these alert and amusing " purse dogs" stand among the oldest breeds of the Americas.',
+    },
+    {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        breed: 'Rottweiler',
+        price: 18000,
+        location: 'Nelspruit, MP',
+        image: [
+            'https://placedog.net/640/480?id=8',
+            'https://placedog.net/640/480?id=108',
+            'https://placedog.net/640/480?id=208',
+        ],
+        description: 'The Rottweiler is a robust, powerful dog of medium-to-large size. They are known for their strength, endurance, and protective instincts. When well-socialized, they are gentle and loving companions.',
+    },
+    {
+        id: '8765e432-12d3-4567-b89a-426614174001',
+        breed: 'Dachshund',
+        price: 6000,
+        location: 'Kimberley, NC',
+        image: [
+            'https://placedog.net/640/480?id=9',
+            'https://placedog.net/640/480?id=109',
+            'https://placedog.net/640/480?id=209',
+        ],
+        description: 'The Dachshund, with its long body and short legs, is a brave and playful dog. They are known for their cleverness and can be a bit stubborn, but they are also very loyal to their families.',
+    },
+];
