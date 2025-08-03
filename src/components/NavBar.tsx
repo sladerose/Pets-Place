@@ -16,7 +16,7 @@ const NavBar = () => {
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-gray-200">
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold text-gray-800 hover:text-blue-500 flex items-center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="size-6 mr-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="size-6 mr-2">
             <path d="M12 2C9.8 2 8 3.8 8 6C8 8.2 9.8 10 12 10C14.2 10 16 8.2 16 6C16 3.8 14.2 2 12 2Z"/>
             <path d="M17 10C15.9 10 15 10.9 15 12C15 13.1 15.9 14 17 14C18.1 14 19 13.1 19 12C19 10.9 18.1 10 17 10Z"/>
             <path d="M7 10C5.9 10 5 10.9 5 12C5 13.1 5.9 14 7 14C8.1 14 9 13.1 9 12C9 10.9 8.1 10 7 10Z"/>
