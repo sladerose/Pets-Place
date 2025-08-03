@@ -221,7 +221,7 @@ const HomePage = () => {
       
 
       <div
-        className="relative bg-blue-100 shadow-lg h-64 flex items-center text-gray-800"
+        className="relative bg-white rounded-lg shadow-md h-64 flex items-center text-gray-800"
       >
         <div className="container mx-auto px-6 text-left bg-black bg-opacity-50 p-4 rounded-lg">
           <h1 className="text-5xl font-bold mb-4">
